@@ -25,10 +25,12 @@ app.post('/login', (req, res) => {
     .lean()
     .then(user => {
       console.log(user) // { _id:.., password:,,}
-      if (user.password === password) {
+      if (!user) {
+        res.render('login', { noUser: "no user" })
+      } else if (user.password === password) {
         res.render('welcome', { user })
       } else {
-        res.redirect('/') //TODO: show invalid or unregistered account
+        res.render('login', { invalidPW: "invalid PW" })
       }
     })
     .catch(error => {
