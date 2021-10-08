@@ -3,13 +3,14 @@ const app = express()
 const exphbs = require('express-handlebars')
 // connect with MongoDB
 require('./config/mongoose')
-const Accounts = require('/models/accounts')
-
-//import from seeder
+const Accounts = require('./models/accounts')
 
 // template engine
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
+
+// body-parser
+app.use(express.urlencoded({ extended: true }))
 
 // routes
 app.get("/", (req, res) => {
@@ -18,6 +19,21 @@ app.get("/", (req, res) => {
 
 app.post('/login', (req, res) => {
   // check input
+  const { email, password } = req.body
+  console.log(email, password)  //OK
+  Accounts.findOne({ email: email })
+    .lean()
+    .then(user => {
+      console.log(user) // { _id:.., password:,,}
+      if (user.password === password) {
+        res.render('welcome', { user })
+      } else {
+        res.redirect('/') //TODO: show invalid or unregistered account
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
 })
 
 app.listen(3000, () => {
