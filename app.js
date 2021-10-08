@@ -1,8 +1,10 @@
 const express = require("express")
 const app = express()
 const exphbs = require('express-handlebars')
+// connect with MongoDB
+require('./config/mongoose')
+const Accounts = require('/models/accounts')
 
-//mongoose + model
 //import from seeder
 
 // template engine
